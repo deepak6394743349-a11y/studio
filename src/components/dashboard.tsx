@@ -5,7 +5,6 @@ import type { Expense, CreditCard, Action } from '@/lib/types';
 import { Icons } from '@/components/icons';
 import { CreditCardDisplay } from '@/components/credit-card-display';
 import { AddExpenseForm } from '@/components/add-expense-form';
-import { ExpenseList } from '@/components/expense-list';
 import { ExpenseChart } from '@/components/expense-chart';
 
 type State = {
@@ -81,7 +80,7 @@ export default function Dashboard() {
           </h1>
         </div>
       </header>
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-auto">
         <div className="p-4 md:p-8 grid gap-8 grid-cols-1 lg:grid-cols-5">
           <aside className="lg:col-span-2 flex flex-col gap-8">
             <CreditCardDisplay card={state.card} dispatch={dispatch} />
@@ -89,7 +88,6 @@ export default function Dashboard() {
           </aside>
           <div className="lg:col-span-3 flex flex-col gap-8">
             <ExpenseChart expenses={state.expenses} />
-            <ExpenseList expenses={state.expenses} dispatch={dispatch} />
           </div>
         </div>
       </main>
