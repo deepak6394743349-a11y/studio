@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useEffect, Dispatch } from 'react';
+import { useReducer, useEffect } from 'react';
 import type { Expense, CreditCard, Action } from '@/lib/types';
 import { Icons } from '@/components/icons';
 import { CreditCardDisplay } from '@/components/credit-card-display';
@@ -54,7 +54,6 @@ export default function Dashboard() {
       const storedState = localStorage.getItem(STORAGE_KEY);
       if (storedState) {
         const parsedState = JSON.parse(storedState);
-        // Basic validation
         if (parsedState && typeof parsedState === 'object') {
           dispatch({ type: 'SET_STATE', payload: { ...initialState, ...parsedState } });
         }
@@ -82,7 +81,7 @@ export default function Dashboard() {
           </h1>
         </div>
       </header>
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="p-4 md:p-8 grid gap-8 grid-cols-1 lg:grid-cols-5">
           <aside className="lg:col-span-2 flex flex-col gap-8">
             <CreditCardDisplay card={state.card} dispatch={dispatch} />

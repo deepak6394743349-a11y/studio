@@ -38,7 +38,6 @@ export function ExpenseList({ expenses, dispatch }: ExpenseListProps) {
   const [activeTab, setActiveTab] = useState('today');
 
   const filteredExpenses = useMemo(() => {
-    const now = new Date();
     switch (activeTab) {
       case 'month':
         return expenses.filter((e) => isThisMonth(parseISO(e.date)));
