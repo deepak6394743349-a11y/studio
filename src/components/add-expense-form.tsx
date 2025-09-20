@@ -46,7 +46,7 @@ export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       description: '',
-      amount: undefined,
+      amount: '' as any,
       category: '',
     },
   });
