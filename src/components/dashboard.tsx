@@ -66,8 +66,8 @@ const appReducer = (state: State, action: Action): State => {
 const initialState: State = {
   expenses: [],
   cards: [
-    { id: 'hdfc-card', name: 'HDFC Bank', number: '1234567890123456', expiry: '12/28' },
-    { id: 'axis-card', name: 'Axis Bank', number: '9876543210987654', expiry: '10/27' },
+    { id: 'hdfc-card', bankName: 'HDFC Bank', name: 'Jane Doe', number: '1234567890123456', expiry: '12/28' },
+    { id: 'axis-card', bankName: 'Axis Bank', name: 'Jane Doe', number: '9876543210987654', expiry: '10/27' },
   ],
   selectedCardId: 'hdfc-card',
 };
@@ -91,7 +91,12 @@ export default function Dashboard() {
            };
            // Handle legacy single card state
            if (parsedState.card && !parsedState.cards) {
-              const legacyCard: CreditCard = { ...parsedState.card, id: crypto.randomUUID() };
+              const legacyCard: CreditCard = { 
+                ...parsedState.card, 
+                id: crypto.randomUUID(),
+                bankName: parsedState.card.name,
+                name: 'Jane Doe' // Add a default name for the card holder
+              };
               mergedState.cards = [legacyCard];
               mergedState.selectedCardId = legacyCard.id;
               delete (mergedState as any).card;

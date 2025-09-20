@@ -100,7 +100,7 @@ export function CreditCardDisplay({ cards, selectedCardId, dispatch }: CreditCar
                   <CarouselItem key={card.id}>
                     <div className="aspect-[1.586] w-full rounded-lg p-6 flex flex-col justify-between bg-gradient-to-br from-primary via-purple-500 to-accent text-primary-foreground shadow-lg">
                       <div className="flex justify-between items-start">
-                        <span className="font-bold text-xl">{card.name}</span>
+                        <span className="font-bold text-xl">{card.bankName}</span>
                         {chipImage && (
                           <Image
                             src={chipImage.imageUrl}

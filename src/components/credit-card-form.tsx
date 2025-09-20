@@ -26,6 +26,7 @@ const formSchema = z.object({
   expiry: z
     .string()
     .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Expiry date must be in MM/YY format'),
+  bankName: z.string().min(2, 'Bank name must be at least 2 characters'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -43,6 +44,7 @@ export function CreditCardForm({ card, dispatch, onFinished }: CreditCardFormPro
       number: '',
       name: '',
       expiry: '',
+      bankName: '',
     },
   });
 
@@ -58,6 +60,19 @@ export function CreditCardForm({ card, dispatch, onFinished }: CreditCardFormPro
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="bankName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bank Name</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., HDFC Bank" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="number"

@@ -12,6 +12,7 @@ export interface CreditCard {
   number: string;
   expiry: string;
   name: string;
+  bankName: string;
 }
 
 export type State = {
