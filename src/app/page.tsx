@@ -30,6 +30,10 @@ const initialTransactions: Transaction[] = [
   { id: 1, cardId: 1, description: 'Starbucks Coffee', amount: 8.50, category: 'Food', date: '2024-05-20' },
   { id: 2, cardId: 1, description: 'Netflix Subscription', amount: 15.00, category: 'Entertainment', date: '2024-05-18' },
   { id: 3, cardId: 2, description: 'Amazon Purchase', amount: 125.00, category: 'Shopping', date: '2024-05-19' },
+  { id: 4, cardId: 1, description: 'Groceries', amount: 75.20, category: 'Shopping', date: '2024-05-21' },
+  { id: 5, cardId: 1, description: 'Movie Tickets', amount: 22.00, category: 'Entertainment', date: '2024-05-22' },
+  { id: 6, cardId: 2, description: 'Dinner Out', amount: 60.00, category: 'Food', date: '2024-05-23' },
+
 ];
 
 export default function Home() {
@@ -83,7 +87,7 @@ export default function Home() {
   const filteredTransactions = transactions.filter(t => t.cardId === selectedCard?.id);
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">My Cards</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
