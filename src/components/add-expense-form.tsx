@@ -32,7 +32,30 @@ const formSchema = z.object({
   category: z.string().min(1, 'Please select a category'),
 });
 
-const STATIC_CATEGORIES = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Health", "Other"];
+const STATIC_CATEGORIES = [
+  "Food & Groceries", "Restaurants & Dining", "Coffee Shops", "Bars & Nightlife",
+  "Public Transportation", "Ride-Sharing", "Gasoline & Fuel", "Vehicle Maintenance", "Parking", "Taxis",
+  "Rent/Mortgage", "Property Taxes", "Home Insurance", "Utilities", "Internet", "Cable/Streaming", "Phone Bill", "Home Maintenance", "Furniture & Decor", "Household Supplies",
+  "Clothing & Accessories", "Shoes", "Jewelry & Watches", "Personal Care & Cosmetics", "Haircuts & Salons",
+  "Gym Membership", "Sports & Recreation", "Hobbies & Crafts", "Movies & Theaters", "Concerts & Events", "Books & Magazines", "Music", "Games",
+  "Doctor & Co-pays", "Dentist", "Eye Care", "Prescriptions", "Health Insurance", "Vitamins & Supplements",
+  "Tuition & School Fees", "Textbooks & Supplies", "Student Loans", "Online Courses",
+  "Airfare", "Hotels & Accommodation", "Car Rental", "Tours & Activities", "Souvenirs",
+  "Charitable Donations", "Gifts", "Pet Food & Supplies", "Veterinary Care", "Pet Grooming",
+  "Life Insurance", "Investments", "Savings", "Retirement Contributions", "Financial Advisor Fees",
+  "Electronics", "Software", "Gadgets", "Home Appliances",
+  "Childcare & Babysitting", "Kids' Activities", "Toys & Games", "Baby Supplies", "School Lunches",
+  "Federal Taxes", "State Taxes", "Local Taxes", "Property Taxes",
+  "Legal Fees", "Bank Fees", "Credit Card Fees", "Postage & Shipping", "Subscriptions & Memberships",
+  "Home Office Supplies", "Business Travel", "Client Entertainment", "Professional Development", "Business Software",
+  "Emergency Fund", "Home Improvement Projects", "New Vehicle Fund", "Vacation Fund",
+  "Laundry & Dry Cleaning", "Home Security", "Landscaping & Garden", "Flowers", "Donations",
+  "Alcohol", "Tobacco", "Lottery & Gambling",
+  "Therapy & Counseling", "Spa & Wellness", "Alternative Medicine",
+  "Continuing Education", "Workshops & Seminars", "Certifications",
+  "Car Wash", "Public Restrooms", "ATM Fees", "Tips & Gratuities", "Other"
+];
+
 
 interface AddExpenseFormProps {
   dispatch: Dispatch<Action>;
@@ -52,7 +75,7 @@ export function AddExpenseForm({ dispatch, allCategories, cardId }: AddExpenseFo
     },
   });
   
-  const uniqueCategories = Array.from(new Set([...STATIC_CATEGORIES, ...allCategories]));
+  const uniqueCategories = Array.from(new Set([...STATIC_CATEGORIES, ...allCategories])).sort();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (!cardId) {
