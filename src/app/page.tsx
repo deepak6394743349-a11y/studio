@@ -126,7 +126,14 @@ export default function Home() {
   return (
     <div className="p-4 md:p-8">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">My Cards</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-gray-800">My Cards</h2>
+          <button onClick={() => setShowAddCardForm(true)} className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 font-semibold transition-colors">
+              <PlusCircle className="w-5 h-5" />
+              <span>Add New Card</span>
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cards.map(card => (
             <div
@@ -167,13 +174,6 @@ export default function Home() {
 
             </div>
           ))}
-          <div
-            onClick={() => setShowAddCardForm(true)}
-            className="flex flex-col justify-center items-center p-6 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 bg-white hover:bg-gray-100 hover:border-gray-400 cursor-pointer transition-all duration-300"
-          >
-            <PlusCircle className="w-10 h-10 mb-2" />
-            <p className="font-semibold">Add New Card</p>
-          </div>
         </div>
       </div>
 
@@ -301,5 +301,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
