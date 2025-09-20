@@ -1,10 +1,10 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCard, PlusCircle, DollarSign, Tag, Calendar, Banknote, Trash2 } from 'lucide-react';
 
-// Mock data
+// Mock data for initial state if local storage is empty
 interface Card {
   id: number;
   name: string;
@@ -33,13 +33,12 @@ const initialTransactions: Transaction[] = [
   { id: 4, cardId: 1, description: 'Groceries', amount: 75.20, category: 'Shopping', date: '2024-05-21' },
   { id: 5, cardId: 1, description: 'Movie Tickets', amount: 22.00, category: 'Entertainment', date: '2024-05-22' },
   { id: 6, cardId: 2, description: 'Dinner Out', amount: 60.00, category: 'Food', date: '2024-05-23' },
-
 ];
 
 export default function Home() {
-  const [cards, setCards] = useState<Card[]>(initialCards);
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
-  const [selectedCard, setSelectedCard] = useState<Card | null>(initialCards[0]);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [newCard, setNewCard] = useState({ name: '', bank: '', last4: '' });
   const [showAddCardForm, setShowAddCardForm] = useState(false);
   const [showDeleteCardConfirm, setShowDeleteCardConfirm] = useState(false);
@@ -48,7 +47,56 @@ export default function Home() {
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
   const [showAddTransactionForm, setShowAddTransactionForm] = useState(false);
   const [newTransaction, setNewTransaction] = useState({ description: '', amount: '', category: '', date: '' });
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  // Load data from localStorage on initial render
+  useEffect(() => {
+    try {
+      const storedCards = localStorage.getItem('cards');
+      const storedTransactions = localStorage.getItem('transactions');
+
+      let loadedCards: Card[];
+      if (storedCards) {
+        loadedCards = JSON.parse(storedCards);
+      } else {
+        loadedCards = initialCards;
+      }
+      setCards(loadedCards);
+
+      if (storedTransactions) {
+        setTransactions(JSON.parse(storedTransactions));
+      } else {
+        setTransactions(initialTransactions);
+      }
+      
+      if (loadedCards.length > 0) {
+        setSelectedCard(loadedCards[0]);
+      }
+
+    } catch (error) {
+        console.error("Failed to load data from local storage", error);
+        setCards(initialCards);
+        setTransactions(initialTransactions);
+        if (initialCards.length > 0) {
+            setSelectedCard(initialCards[0]);
+        }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save cards to localStorage whenever they change
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('cards', JSON.stringify(cards));
+    }
+  }, [cards, isLoaded]);
+
+  // Save transactions to localStorage whenever they change
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+    }
+  }, [transactions, isLoaded]);
 
   const handleAddCard = (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,6 +170,14 @@ export default function Home() {
 
 
   const filteredTransactions = transactions.filter(t => t.cardId === selectedCard?.id);
+
+  if (!isLoaded) {
+    return (
+        <div className="flex justify-center items-center h-screen">
+            <div className="text-xl font-semibold">Loading...</div>
+        </div>
+    )
+  }
 
   return (
     <div className="p-4 md:p-8">
@@ -301,3 +357,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
