@@ -36,19 +36,23 @@ const HDFCDesign = ({ card }: { card: CreditCard }) => {
   const chipImage = PlaceHolderImages.find(img => img.id === 'credit-card-chip');
   return (
     <div 
-      className="aspect-[1.586] w-full rounded-lg p-4 sm:p-6 flex flex-col justify-between text-white shadow-lg relative overflow-hidden"
-      style={{ background: 'linear-gradient(to bottom right, #00A3E0, #0095CC)' }}
+      className="aspect-[1.586] w-full rounded-xl p-6 flex flex-col justify-between text-white shadow-lg relative overflow-hidden bg-[#003D7A]"
     >
-      <div 
-        className="absolute inset-0 w-full h-full"
+       <div 
+        className="absolute inset-0 w-full h-full opacity-50"
         style={{
-          backgroundImage: 'repeating-linear-gradient(-45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 4px)',
-          backgroundSize: '4px 4px'
+          backgroundImage: 'radial-gradient(circle at top left, #00A3E0, transparent 40%), radial-gradient(circle at bottom right, #C71F2D, transparent 40%)',
         }}
+      />
+      <div 
+        className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-white/5"
+      />
+       <div 
+        className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 rounded-full bg-white/5"
       />
 
       <div className="relative z-10 flex justify-between items-start">
-        <svg viewBox="0 0 130 30" className="w-24 h-auto">
+         <svg viewBox="0 0 130 30" className="w-24 h-auto">
             <rect width="130" height="30" fill="#003D7A"/>
             <path d="M12 5 H18 V12 H25 V18 H18 V25 H12 V18 H5 V12 H12 Z" fill="white"/>
             <text x="35" y="21" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="white">HDFC BANK</text>
@@ -57,35 +61,27 @@ const HDFCDesign = ({ card }: { card: CreditCard }) => {
           <Image
             src={chipImage.imageUrl}
             alt={chipImage.description}
-            width={40}
-            height={32}
-            className="rounded-sm"
+            width={48}
+            height={38}
+            className="rounded-md"
             data-ai-hint={chipImage.imageHint}
           />
         )}
       </div>
 
-      <div className="relative z-10 text-center -mt-8">
-        <div className="relative inline-block">
-          <svg width="120" height="120" viewBox="0 0 120 120" className="opacity-80">
-            <path d="M20 50 L50 20 L80 50 L50 80 Z" fill="#C71F2D" transform="translate(10, 5)"/>
-            <path d="M40 70 L70 40 L100 70 L70 100 Z" fill="#003D7A" transform="translate(-10, -5)"/>
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-white text-lg font-mono tracking-wider">
-              <span className="text-xl font-bold">{'>'}</span>MONEYBACK+<span className="text-xl font-bold">{'<'}</span>
-            </p>
-          </div>
-        </div>
+      <div className="relative z-10 text-center">
+        <p className="text-white text-lg font-mono tracking-wider">
+          <span className="text-xl font-bold">{'>'}</span>MONEYBACK+<span className="text-xl font-bold">{'<'}</span>
+        </p>
       </div>
       
       <div className="relative z-10 flex flex-col gap-2 text-white">
-        <span className="text-xl sm:text-2xl font-mono tracking-widest">{`**** **** **** ${card.number.slice(-4)}`}</span>
+        <span className="text-2xl font-mono tracking-widest">{`**** **** **** ${card.number.slice(-4)}`}</span>
         <div className="flex justify-between items-end">
-          <span className="uppercase text-sm sm:text-base font-sans">{card.name}</span>
+          <span className="uppercase text-base font-sans">{card.name}</span>
           <div className="flex flex-col items-end">
             <span className="text-xs">VALID THRU</span>
-            <span className="text-sm sm:text-base font-mono">{card.expiry}</span>
+            <span className="text-base font-mono">{card.expiry}</span>
           </div>
            <VisaLogo className="w-16 h-auto" />
         </div>
