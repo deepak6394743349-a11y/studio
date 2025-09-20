@@ -6,6 +6,7 @@ import { Icons } from '@/components/icons';
 import { CreditCardDisplay } from '@/components/credit-card-display';
 import { AddExpenseForm } from '@/components/add-expense-form';
 import { ExpenseChart } from '@/components/expense-chart';
+import { ExpenseList } from '@/components/expense-list';
 
 type State = {
   expenses: Expense[];
@@ -80,14 +81,15 @@ export default function Dashboard() {
           </h1>
         </div>
       </header>
-      <main className="flex-1 overflow-auto">
-        <div className="p-4 md:p-8 grid gap-8 grid-cols-1 lg:grid-cols-5">
-          <aside className="lg:col-span-2 flex flex-col gap-8">
+      <main className="flex-1 overflow-auto p-4 md:p-8">
+        <div className="grid gap-8 grid-cols-1 xl:grid-cols-5">
+          <aside className="xl:col-span-2 flex flex-col gap-8">
             <CreditCardDisplay card={state.card} dispatch={dispatch} />
             <AddExpenseForm dispatch={dispatch} expenses={state.expenses} />
           </aside>
-          <div className="lg:col-span-3 flex flex-col gap-8">
+          <div className="xl:col-span-3 flex flex-col gap-8">
             <ExpenseChart expenses={state.expenses} />
+            <ExpenseList expenses={state.expenses} dispatch={dispatch} />
           </div>
         </div>
       </main>
