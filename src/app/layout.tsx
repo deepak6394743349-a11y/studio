@@ -18,10 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} flex flex-col min-h-screen`}>
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+      <body className={`${inter.className} bg-gray-50`}>
+        <div className="flex flex-col h-screen">
+          <Header />
+          <main className="flex-1 overflow-y-auto">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

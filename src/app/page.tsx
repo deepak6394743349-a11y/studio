@@ -87,7 +87,7 @@ export default function Home() {
   const filteredTransactions = transactions.filter(t => t.cardId === selectedCard?.id);
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50">
+    <div className="p-4 md:p-8">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">My Cards</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -132,7 +132,7 @@ export default function Home() {
           ))}
           <div
             onClick={() => setShowAddCardForm(true)}
-            className="flex flex-col justify-center items-center p-6 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:bg-gray-100 hover:border-gray-400 cursor-pointer transition-all duration-300"
+            className="flex flex-col justify-center items-center p-6 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 bg-white hover:bg-gray-100 hover:border-gray-400 cursor-pointer transition-all duration-300"
           >
             <PlusCircle className="w-10 h-10 mb-2" />
             <p className="font-semibold">Add New Card</p>
