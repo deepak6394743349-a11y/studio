@@ -6,8 +6,8 @@ import Header from "@/components/header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Colorful App",
-  description: "An app with a colorful header",
+  title: "Card Manager",
+  description: "A simple app to manage your credit cards",
 };
 
 export default function RootLayout({
