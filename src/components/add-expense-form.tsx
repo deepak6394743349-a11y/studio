@@ -27,7 +27,8 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
-import { Loader2, Plus, Check, ChevronsUpDown } from 'lucide-react';
+import { Loader2, Plus, Check, ChevronsUpDown, Sparkles } from 'lucide-react';
+import { suggestCategory } from '@/ai/flows/suggest-category-flow';
 
 const formSchema = z.object({
   description: z.string().min(3, 'Description is too short'),
@@ -69,6 +70,7 @@ interface AddExpenseFormProps {
 export function AddExpenseForm({ dispatch, allCategories, cardId }: AddExpenseFormProps) {
   const { toast } = useToast();
   const [comboboxOpen, setComboboxOpen] = useState(false);
+  const [isSuggesting, setIsSuggesting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -97,6 +99,45 @@ export function AddExpenseForm({ dispatch, allCategories, cardId }: AddExpenseFo
       description: `Successfully added "${values.description}".`,
     });
   }
+
+  const handleSuggestCategory = async () => {
+    const description = form.getValues('description');
+    if (!description || description.trim().length < 3) {
+      toast({
+        variant: 'destructive',
+        title: 'Description too short',
+        description: 'Please enter a description before suggesting a category.',
+      });
+      return;
+    }
+
+    setIsSuggesting(true);
+    try {
+      const result = await suggestCategory({ description, categories: uniqueCategories });
+      if (result.category && uniqueCategories.includes(result.category)) {
+        form.setValue('category', result.category, { shouldValidate: true });
+        toast({
+          title: 'Category Suggested',
+          description: `We've selected "${result.category}" for you.`,
+        });
+      } else {
+         toast({
+          variant: 'destructive',
+          title: 'Suggestion Failed',
+          description: 'The AI could not suggest a valid category.',
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        title: 'Suggestion Error',
+        description: 'An error occurred while suggesting a category.',
+      });
+    } finally {
+      setIsSuggesting(false);
+    }
+  };
 
   return (
     <Card>
@@ -138,57 +179,69 @@ export function AddExpenseForm({ dispatch, allCategories, cardId }: AddExpenseFo
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Category</FormLabel>
-                  <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "w-full justify-between",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value
-                            ? uniqueCategories.find(
-                                (cat) => cat === field.value
-                              )
-                            : "Select a category"}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
-                      <Command>
-                        <CommandInput placeholder="Search category..." />
-                        <CommandList>
-                          <CommandEmpty>No category found.</CommandEmpty>
-                          <CommandGroup>
-                            {uniqueCategories.map((cat) => (
-                              <CommandItem
-                                value={cat}
-                                key={cat}
-                                onSelect={() => {
-                                  form.setValue("category", cat);
-                                  setComboboxOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    cat === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {cat}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <div className="flex gap-2">
+                    <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? uniqueCategories.find(
+                                  (cat) => cat === field.value
+                                )
+                              : "Select a category"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search category..." />
+                          <CommandList>
+                            <CommandEmpty>No category found.</CommandEmpty>
+                            <CommandGroup>
+                              {uniqueCategories.map((cat) => (
+                                <CommandItem
+                                  value={cat}
+                                  key={cat}
+                                  onSelect={() => {
+                                    form.setValue("category", cat);
+                                    setComboboxOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      cat === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {cat}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                     <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={handleSuggestCategory}
+                      disabled={isSuggesting}
+                      title="Suggest Category with AI"
+                    >
+                      {isSuggesting ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
