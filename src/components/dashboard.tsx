@@ -66,10 +66,11 @@ const appReducer = (state: State, action: Action): State => {
 const initialState: State = {
   expenses: [],
   cards: [
+    { id: 'tata-neu-card', bankName: 'Tata Neu', name: 'Jane Doe', number: '1234567890123456', expiry: '12/28' },
     { id: 'hdfc-card', bankName: 'HDFC Bank', name: 'Jane Doe', number: '1234567890123456', expiry: '12/28' },
     { id: 'axis-card', bankName: 'Axis Bank', name: 'Jane Doe', number: '9876543210987654', expiry: '10/27' },
   ],
-  selectedCardId: 'hdfc-card',
+  selectedCardId: 'tata-neu-card',
 };
 
 const STORAGE_KEY = 'cc-expense-app-state';
