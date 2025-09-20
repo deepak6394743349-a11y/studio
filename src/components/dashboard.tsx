@@ -73,8 +73,8 @@ export default function Dashboard() {
   }, [state]);
 
   return (
-    <div className="flex flex-col">
-      <header className="flex items-center justify-between p-4 border-b bg-card">
+    <div className="flex flex-col h-full">
+      <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-card">
         <div className="flex items-center gap-3">
           <Icons.Logo className="h-7 w-7 text-primary" />
           <h1 className="text-xl font-bold font-headline text-foreground">
@@ -82,16 +82,18 @@ export default function Dashboard() {
           </h1>
         </div>
       </header>
-      <div className="p-4 md:p-8 grid gap-8 lg:grid-cols-5">
-        <aside className="lg:col-span-2 flex flex-col gap-8">
-          <CreditCardDisplay card={state.card} dispatch={dispatch} />
-          <AddExpenseForm dispatch={dispatch} expenses={state.expenses} />
-        </aside>
-        <div className="lg:col-span-3 flex flex-col gap-8">
-          <ExpenseChart expenses={state.expenses} />
-          <ExpenseList expenses={state.expenses} dispatch={dispatch} />
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-4 md:p-8 grid gap-8 lg:grid-cols-5">
+          <aside className="lg:col-span-2 flex flex-col gap-8">
+            <CreditCardDisplay card={state.card} dispatch={dispatch} />
+            <AddExpenseForm dispatch={dispatch} expenses={state.expenses} />
+          </aside>
+          <div className="lg:col-span-3 flex flex-col gap-8">
+            <ExpenseChart expenses={state.expenses} />
+            <ExpenseList expenses={state.expenses} dispatch={dispatch} />
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
