@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CreditCard, PlusCircle, DollarSign, Tag, Calendar, Banknote } from 'lucide-react';
+import { CreditCard, PlusCircle, DollarSign, Tag, Calendar, Banknote, Trash2 } from 'lucide-react';
 
 // Mock data
 interface Card {
@@ -38,6 +38,8 @@ export default function Home() {
   const [selectedCard, setSelectedCard] = useState<Card | null>(initialCards[0]);
   const [newCard, setNewCard] = useState({ name: '', bank: '', last4: '' });
   const [showAddCardForm, setShowAddCardForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState<Card | null>(null);
 
   const handleAddCard = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +50,33 @@ export default function Home() {
       setNewCard({ name: '', bank: '', last4: '' });
       setShowAddCardForm(false);
       setSelectedCard(cardToAdd);
+    }
+  };
+  
+  const openDeleteConfirm = (e: React.MouseEvent, card: Card) => {
+    e.stopPropagation(); // Prevent card selection when clicking delete
+    setCardToDelete(card);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (cardToDelete) {
+      // Filter out the card to be deleted
+      const updatedCards = cards.filter(card => card.id !== cardToDelete.id);
+      setCards(updatedCards);
+
+      // Filter out transactions for the deleted card
+      const updatedTransactions = transactions.filter(t => t.cardId !== cardToDelete.id);
+      setTransactions(updatedTransactions);
+
+      // If the deleted card was the selected one, update selectedCard
+      if (selectedCard?.id === cardToDelete.id) {
+        setSelectedCard(updatedCards.length > 0 ? updatedCards[0] : null);
+      }
+
+      // Close the modal and reset cardToDelete
+      setShowDeleteConfirm(false);
+      setCardToDelete(null);
     }
   };
 
@@ -62,8 +91,15 @@ export default function Home() {
             <div
               key={card.id}
               onClick={() => setSelectedCard(card)}
-              className={`p-6 rounded-xl shadow-lg cursor-pointer transition-all duration-300 ${selectedCard?.id === card.id ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white transform scale-105' : 'bg-white hover:shadow-xl'}`}
+              className={`relative p-6 rounded-xl shadow-lg cursor-pointer transition-all duration-300 ${selectedCard?.id === card.id ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white transform scale-105' : 'bg-white hover:shadow-xl'}`}
             >
+              <button
+                onClick={(e) => openDeleteConfirm(e, card)}
+                className={`absolute top-3 right-3 p-1 rounded-full transition-colors ${selectedCard?.id === card.id ? 'text-white hover:bg-white/20' : 'text-gray-400 hover:bg-gray-200 hover:text-gray-700'}`}
+                aria-label="Delete card"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className={`text-xl font-bold ${selectedCard?.id === card.id ? 'text-white' : 'text-gray-800'}`}>{card.name}</h3>
@@ -103,6 +139,21 @@ export default function Home() {
                 <button type="submit" className="px-6 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 font-semibold">Add Card</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showDeleteConfirm && cardToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md m-4">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">Confirm Deletion</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete the card "{cardToDelete.name}"? This will also remove all its associated transactions. This action cannot be undone.
+            </p>
+            <div className="flex justify-end mt-6 space-x-4">
+              <button type="button" onClick={() => setShowDeleteConfirm(false)} className="px-6 py-2 rounded-lg text-gray-600 bg-gray-100 hover:bg-gray-200 font-semibold">Cancel</button>
+              <button type="button" onClick={handleConfirmDelete} className="px-6 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 font-semibold">Delete</button>
+            </div>
           </div>
         </div>
       )}
