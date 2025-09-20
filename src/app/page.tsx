@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CreditCard, PlusCircle, DollarSign, Tag, Calendar, Banknote, Trash2 } from 'lucide-react';
+import { CreditCard, PlusCircle, DollarSign, Tag, Calendar, Banknote, Trash2, TrendingUp, Wallet, Coins } from 'lucide-react';
 
 // Mock data for initial state if local storage is empty
 interface Card {
@@ -171,6 +171,32 @@ export default function Home() {
 
   const filteredTransactions = transactions.filter(t => t.cardId === selectedCard?.id);
 
+  const calculateSpend = () => {
+    if (!selectedCard) return { total: 0, today: 0, thisMonth: 0 };
+    
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+    const thisMonthStr = now.toISOString().slice(0, 7);
+
+    let total = 0;
+    let today = 0;
+    let thisMonth = 0;
+
+    filteredTransactions.forEach(t => {
+      total += t.amount;
+      if (t.date === todayStr) {
+        today += t.amount;
+      }
+      if (t.date.startsWith(thisMonthStr)) {
+        thisMonth += t.amount;
+      }
+    });
+
+    return { total, today, thisMonth };
+  };
+
+  const spend = calculateSpend();
+
   if (!isLoaded) {
     return (
         <div className="flex justify-center items-center h-screen">
@@ -311,6 +337,37 @@ export default function Home() {
               <span>Add Transaction</span>
             </button>
           </div>
+          
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
+              <div className="p-3 bg-blue-100 rounded-full">
+                <Wallet className="w-6 h-6 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Total Spend</p>
+                <p className="text-2xl font-bold text-gray-800">${spend.total.toFixed(2)}</p>
+              </div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
+              <div className="p-3 bg-green-100 rounded-full">
+                <TrendingUp className="w-6 h-6 text-green-500" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Today</p>
+                <p className="text-2xl font-bold text-gray-800">${spend.today.toFixed(2)}</p>
+              </div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
+              <div className="p-3 bg-purple-100 rounded-full">
+                <Coins className="w-6 h-6 text-purple-500" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">This Month</p>
+                <p className="text-2xl font-bold text-gray-800">${spend.thisMonth.toFixed(2)}</p>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 max-h-[40vh] overflow-y-auto">
             {filteredTransactions.length > 0 ? (
               <ul className="divide-y divide-gray-200">
