@@ -91,27 +91,39 @@ export default function Home() {
             <div
               key={card.id}
               onClick={() => setSelectedCard(card)}
-              className={`relative p-6 rounded-xl shadow-lg cursor-pointer transition-all duration-300 ${selectedCard?.id === card.id ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white transform scale-105' : 'bg-white hover:shadow-xl'}`}
+              className={`relative p-6 rounded-xl shadow-lg cursor-pointer transition-all duration-300 transform hover:-translate-y-1 ${
+                selectedCard?.id === card.id ? 'bg-gradient-to-br from-gray-800 to-black text-white ring-2 ring-blue-400' : 'bg-gradient-to-br from-gray-600 to-gray-700 text-white'
+              }`}
             >
-              <button
+               <button
                 onClick={(e) => openDeleteConfirm(e, card)}
-                className={`absolute top-3 right-3 p-1 rounded-full transition-colors ${selectedCard?.id === card.id ? 'text-white hover:bg-white/20' : 'text-gray-400 hover:bg-gray-200 hover:text-gray-700'}`}
+                className="absolute top-3 right-3 p-1 rounded-full text-white/50 hover:bg-white/20 hover:text-white transition-colors"
                 aria-label="Delete card"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className={`text-xl font-bold ${selectedCard?.id === card.id ? 'text-white' : 'text-gray-800'}`}>{card.name}</h3>
-                  <p className={`text-sm ${selectedCard?.id === card.id ? 'text-blue-100' : 'text-gray-500'}`}>{card.bank}</p>
+              
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-lg font-semibold">{card.bank}</span>
+                <div className="w-12 h-8 bg-gradient-to-b from-yellow-400 to-yellow-500 rounded-md flex justify-center items-center">
+                    <div className="w-10 h-6 bg-yellow-200/50 rounded-sm border border-yellow-600/50"></div>
                 </div>
-                <Banknote className={`w-8 h-8 ${selectedCard?.id === card.id ? 'text-blue-200' : 'text-indigo-500'}`} />
               </div>
-              <div className="mt-6 text-right">
-                <p className={`text-lg font-mono tracking-wider ${selectedCard?.id === card.id ? 'text-white' : 'text-gray-700'}`}>
-                  **** **** **** {card.last4}
-                </p>
+
+              <div className="mb-6">
+                  <p className="text-2xl font-mono tracking-widest">
+                    **** **** **** {card.last4}
+                  </p>
               </div>
+
+              <div className="flex justify-between items-end">
+                <div>
+                  <p className="text-xs uppercase text-gray-300">Card Holder</p>
+                  <p className="font-medium tracking-wider">{card.name}</p>
+                </div>
+                 <Banknote className={`w-8 h-8 opacity-70`} />
+              </div>
+
             </div>
           ))}
           <div
