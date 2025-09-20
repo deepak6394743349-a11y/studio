@@ -81,7 +81,7 @@ export default function Dashboard() {
           </h1>
         </div>
       </header>
-      <main className="flex-1 overflow-y-auto overflow-x-hidden">
+      <main className="flex-1 overflow-y-auto">
         <div className="p-4 md:p-8 grid gap-8 grid-cols-1 lg:grid-cols-5">
           <aside className="lg:col-span-2 flex flex-col gap-8">
             <CreditCardDisplay card={state.card} dispatch={dispatch} />
