@@ -28,6 +28,8 @@ const formSchema = z.object({
     .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Expiry date must be in MM/YY format'),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 interface CreditCardFormProps {
   card: CreditCard | null;
   dispatch: Dispatch<Action>;
@@ -35,17 +37,21 @@ interface CreditCardFormProps {
 }
 
 export function CreditCardForm({ card, dispatch, onFinished }: CreditCardFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      number: card?.number || '',
-      name: card?.name || '',
-      expiry: card?.expiry || '',
+    defaultValues: card || {
+      number: '',
+      name: '',
+      expiry: '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    dispatch({ type: 'SET_CARD', payload: values });
+  function onSubmit(values: FormValues) {
+    if (card) {
+      dispatch({ type: 'UPDATE_CARD', payload: { ...card, ...values } });
+    } else {
+      dispatch({ type: 'ADD_CARD', payload: values });
+    }
     onFinished();
   }
 

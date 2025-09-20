@@ -7,6 +7,7 @@ export interface Expense {
 }
 
 export interface CreditCard {
+  id: string;
   number: string;
   expiry: string;
   name: string;
@@ -14,12 +15,15 @@ export interface CreditCard {
 
 export type State = {
   expenses: Expense[];
-  card: CreditCard | null;
+  cards: CreditCard[];
+  selectedCardId: string | null;
 };
 
 export type Action =
   | { type: 'SET_STATE'; payload: State }
   | { type: 'ADD_EXPENSE'; payload: Omit<Expense, 'id' | 'date'> }
   | { type: 'DELETE_EXPENSE'; payload: { id: string } }
-  | { type: 'SET_CARD'; payload: CreditCard }
-  | { type: 'DELETE_CARD' };
+  | { type: 'ADD_CARD'; payload: Omit<CreditCard, 'id'> }
+  | { type: 'UPDATE_CARD'; payload: CreditCard }
+  | { type: 'DELETE_CARD'; payload: { id: string } }
+  | { type: 'SELECT_CARD'; payload: { id: string | null } };

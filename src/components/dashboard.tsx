@@ -5,12 +5,13 @@ import type { Expense, CreditCard, Action } from '@/lib/types';
 import { Icons } from '@/components/icons';
 import { CreditCardDisplay } from '@/components/credit-card-display';
 import { AddExpenseForm } from '@/components/add-expense-form';
-import { ExpenseChart } from '@/components/expense-chart';
 import { ExpenseList } from '@/components/expense-list';
+import { ExpenseChart } from '@/components/expense-chart';
 
 type State = {
   expenses: Expense[];
-  card: CreditCard | null;
+  cards: CreditCard[];
+  selectedCardId: string | null;
 };
 
 const appReducer = (state: State, action: Action): State => {
@@ -30,10 +31,30 @@ const appReducer = (state: State, action: Action): State => {
         ...state,
         expenses: state.expenses.filter((e) => e.id !== action.payload.id),
       };
-    case 'SET_CARD':
-      return { ...state, card: action.payload };
-    case 'DELETE_CARD':
-      return { ...state, card: null };
+    case 'ADD_CARD': {
+      const newCard: CreditCard = { ...action.payload, id: crypto.randomUUID() };
+      const newCards = [...state.cards, newCard];
+      return {
+        ...state,
+        cards: newCards,
+        selectedCardId: state.selectedCardId ?? newCard.id,
+      };
+    }
+    case 'UPDATE_CARD': {
+      const newCards = state.cards.map(c => c.id === action.payload.id ? action.payload : c);
+      return { ...state, cards: newCards };
+    }
+    case 'DELETE_CARD': {
+      const newCards = state.cards.filter(c => c.id !== action.payload.id);
+      let newSelectedId = state.selectedCardId;
+      if (state.selectedCardId === action.payload.id) {
+        newSelectedId = newCards.length > 0 ? newCards[0].id : null;
+      }
+      return { ...state, cards: newCards, selectedCardId: newSelectedId };
+    }
+    case 'SELECT_CARD': {
+      return { ...state, selectedCardId: action.payload.id };
+    }
     default:
       return state;
   }
@@ -41,7 +62,8 @@ const appReducer = (state: State, action: Action): State => {
 
 const initialState: State = {
   expenses: [],
-  card: null,
+  cards: [],
+  selectedCardId: null,
 };
 
 const STORAGE_KEY = 'cc-expense-app-state';
@@ -55,7 +77,20 @@ export default function Dashboard() {
       if (storedState) {
         const parsedState = JSON.parse(storedState);
         if (parsedState && typeof parsedState === 'object') {
-          dispatch({ type: 'SET_STATE', payload: { ...initialState, ...parsedState } });
+           const mergedState = {
+            ...initialState,
+            ...parsedState,
+            cards: parsedState.cards || [],
+            selectedCardId: parsedState.selectedCardId !== undefined ? parsedState.selectedCardId : (parsedState.cards?.[0]?.id || null),
+           };
+           // Handle legacy single card state
+           if (parsedState.card && !parsedState.cards) {
+              const legacyCard: CreditCard = { ...parsedState.card, id: crypto.randomUUID() };
+              mergedState.cards = [legacyCard];
+              mergedState.selectedCardId = legacyCard.id;
+              delete (mergedState as any).card;
+           }
+          dispatch({ type: 'SET_STATE', payload: mergedState });
         }
       }
     } catch (error) {
@@ -70,6 +105,8 @@ export default function Dashboard() {
       console.error('Failed to save state to localStorage', error);
     }
   }, [state]);
+  
+  const selectedCard = state.cards.find(c => c.id === state.selectedCardId) ?? null;
 
   return (
     <div className="flex flex-col h-full">
@@ -84,7 +121,11 @@ export default function Dashboard() {
       <main className="flex-1 overflow-auto p-4 md:p-8">
         <div className="grid gap-8 grid-cols-1 xl:grid-cols-5">
           <aside className="xl:col-span-2 flex flex-col gap-8">
-            <CreditCardDisplay card={state.card} dispatch={dispatch} />
+            <CreditCardDisplay
+              cards={state.cards}
+              selectedCardId={state.selectedCardId}
+              dispatch={dispatch}
+            />
             <AddExpenseForm dispatch={dispatch} expenses={state.expenses} />
           </aside>
           <div className="xl:col-span-3 flex flex-col gap-8">
