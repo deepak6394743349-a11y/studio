@@ -40,11 +40,11 @@ interface CreditCardFormProps {
 export function CreditCardForm({ card, dispatch, onFinished }: CreditCardFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: card || {
-      number: '',
-      name: '',
-      expiry: '',
-      bankName: '',
+    defaultValues: {
+      number: card?.number || '',
+      name: card?.name || '',
+      expiry: card?.expiry || '',
+      bankName: card?.bankName || '',
     },
   });
 
