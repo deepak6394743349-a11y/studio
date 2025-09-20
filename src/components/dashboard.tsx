@@ -71,7 +71,7 @@ export default function Dashboard() {
   }, [state]);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full">
       <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-card">
         <div className="flex items-center gap-3">
           <Icons.Logo className="h-7 w-7 text-primary" />
@@ -80,7 +80,7 @@ export default function Dashboard() {
           </h1>
         </div>
       </header>
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="p-4 md:p-8 grid gap-8 lg:grid-cols-5">
           <aside className="lg:col-span-2 flex flex-col gap-8">
             <CreditCardDisplay card={state.card} dispatch={dispatch} />
