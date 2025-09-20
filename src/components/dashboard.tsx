@@ -65,8 +65,11 @@ const appReducer = (state: State, action: Action): State => {
 
 const initialState: State = {
   expenses: [],
-  cards: [],
-  selectedCardId: null,
+  cards: [
+    { id: 'hdfc-card', name: 'HDFC Bank', number: '1234567890123456', expiry: '12/28' },
+    { id: 'axis-card', name: 'Axis Bank', number: '9876543210987654', expiry: '10/27' },
+  ],
+  selectedCardId: 'hdfc-card',
 };
 
 const STORAGE_KEY = 'cc-expense-app-state';
@@ -79,11 +82,11 @@ export default function Dashboard() {
       const storedState = localStorage.getItem(STORAGE_KEY);
       if (storedState) {
         const parsedState = JSON.parse(storedState);
-        if (parsedState && typeof parsedState === 'object') {
+        if (parsedState && typeof parsedState === 'object' && parsedState.cards && parsedState.cards.length > 0) {
            const mergedState = {
             ...initialState,
             ...parsedState,
-            cards: parsedState.cards || [],
+            cards: parsedState.cards,
             selectedCardId: parsedState.selectedCardId !== undefined ? parsedState.selectedCardId : (parsedState.cards?.[0]?.id || null),
            };
            // Handle legacy single card state
