@@ -42,8 +42,10 @@ export default function Home() {
   const [selectedCard, setSelectedCard] = useState<Card | null>(initialCards[0]);
   const [newCard, setNewCard] = useState({ name: '', bank: '', last4: '' });
   const [showAddCardForm, setShowAddCardForm] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showDeleteCardConfirm, setShowDeleteCardConfirm] = useState(false);
   const [cardToDelete, setCardToDelete] = useState<Card | null>(null);
+  const [showDeleteTransactionConfirm, setShowDeleteTransactionConfirm] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
 
   const handleAddCard = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,13 +59,13 @@ export default function Home() {
     }
   };
   
-  const openDeleteConfirm = (e: React.MouseEvent, card: Card) => {
+  const openDeleteCardConfirm = (e: React.MouseEvent, card: Card) => {
     e.stopPropagation(); // Prevent card selection when clicking delete
     setCardToDelete(card);
-    setShowDeleteConfirm(true);
+    setShowDeleteCardConfirm(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDeleteCard = () => {
     if (cardToDelete) {
       // Filter out the card to be deleted
       const updatedCards = cards.filter(card => card.id !== cardToDelete.id);
@@ -79,10 +81,24 @@ export default function Home() {
       }
 
       // Close the modal and reset cardToDelete
-      setShowDeleteConfirm(false);
+      setShowDeleteCardConfirm(false);
       setCardToDelete(null);
     }
   };
+
+  const openDeleteTransactionConfirm = (transaction: Transaction) => {
+    setTransactionToDelete(transaction);
+    setShowDeleteTransactionConfirm(true);
+  };
+
+  const handleConfirmDeleteTransaction = () => {
+    if (transactionToDelete) {
+      setTransactions(transactions.filter(t => t.id !== transactionToDelete.id));
+      setShowDeleteTransactionConfirm(false);
+      setTransactionToDelete(null);
+    }
+  };
+
 
   const filteredTransactions = transactions.filter(t => t.cardId === selectedCard?.id);
 
@@ -100,7 +116,7 @@ export default function Home() {
               }`}
             >
                <button
-                onClick={(e) => openDeleteConfirm(e, card)}
+                onClick={(e) => openDeleteCardConfirm(e, card)}
                 className="absolute top-3 right-3 p-1 rounded-full text-white/50 hover:bg-white/20 hover:text-white transition-colors"
                 aria-label="Delete card"
               >
@@ -159,7 +175,7 @@ export default function Home() {
         </div>
       )}
 
-      {showDeleteConfirm && cardToDelete && (
+      {showDeleteCardConfirm && cardToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md m-4">
             <h3 className="text-2xl font-bold text-gray-800 mb-4">Confirm Deletion</h3>
@@ -167,8 +183,23 @@ export default function Home() {
               Are you sure you want to delete the card "{cardToDelete.name}"? This will also remove all its associated transactions. This action cannot be undone.
             </p>
             <div className="flex justify-end mt-6 space-x-4">
-              <button type="button" onClick={() => setShowDeleteConfirm(false)} className="px-6 py-2 rounded-lg text-gray-600 bg-gray-100 hover:bg-gray-200 font-semibold">Cancel</button>
-              <button type="button" onClick={handleConfirmDelete} className="px-6 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 font-semibold">Delete</button>
+              <button type="button" onClick={() => setShowDeleteCardConfirm(false)} className="px-6 py-2 rounded-lg text-gray-600 bg-gray-100 hover:bg-gray-200 font-semibold">Cancel</button>
+              <button type="button" onClick={handleConfirmDeleteCard} className="px-6 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 font-semibold">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {showDeleteTransactionConfirm && transactionToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm m-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Confirm Deletion</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete the transaction "{transactionToDelete.description}"?
+            </p>
+            <div className="flex justify-end mt-6 space-x-4">
+              <button type="button" onClick={() => setShowDeleteTransactionConfirm(false)} className="px-6 py-2 rounded-lg text-gray-600 bg-gray-100 hover:bg-gray-200 font-semibold">Cancel</button>
+              <button type="button" onClick={handleConfirmDeleteTransaction} className="px-6 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 font-semibold">Delete</button>
             </div>
           </div>
         </div>
@@ -181,8 +212,8 @@ export default function Home() {
             {filteredTransactions.length > 0 ? (
               <ul className="space-y-4">
                 {filteredTransactions.map(t => (
-                  <li key={t.id} className="flex items-center justify-between p-4 border-b border-gray-100 last:border-b-0">
-                    <div className="flex items-center space-x-4">
+                  <li key={t.id} className="flex items-center justify-between p-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 rounded-md">
+                    <div className="flex items-center space-x-4 flex-grow">
                       <div className="p-3 bg-gray-100 rounded-full">
                          <DollarSign className="w-5 h-5 text-green-500" />
                       </div>
@@ -200,7 +231,12 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    <p className="font-bold text-lg text-gray-800">${t.amount.toFixed(2)}</p>
+                    <div className="flex items-center space-x-4">
+                        <p className="font-bold text-lg text-gray-800">${t.amount.toFixed(2)}</p>
+                        <button onClick={() => openDeleteTransactionConfirm(t)} className="p-2 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors">
+                            <Trash2 className="w-5 h-5" />
+                        </button>
+                    </div>
                   </li>
                 ))}
               </ul>
