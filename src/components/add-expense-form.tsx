@@ -93,7 +93,7 @@ export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="15.00" {...field} />
+                    <Input type="number" placeholder="15.00" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

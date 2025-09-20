@@ -1,7 +1,7 @@
 'use client';
 
 import { useReducer, useEffect, Dispatch } from 'react';
-import type { Expense, CreditCard } from '@/lib/types';
+import type { Expense, CreditCard, Action } from '@/lib/types';
 import { Icons } from '@/components/icons';
 import { CreditCardDisplay } from '@/components/credit-card-display';
 import { AddExpenseForm } from '@/components/add-expense-form';
@@ -12,12 +12,6 @@ type State = {
   expenses: Expense[];
   card: CreditCard | null;
 };
-
-export type Action =
-  | { type: 'SET_STATE'; payload: State }
-  | { type: 'ADD_EXPENSE'; payload: Omit<Expense, 'id' | 'date'> }
-  | { type: 'DELETE_EXPENSE'; payload: { id: string } }
-  | { type: 'SET_CARD'; payload: CreditCard };
 
 const appReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -57,7 +51,11 @@ export default function Dashboard() {
     try {
       const storedState = localStorage.getItem(STORAGE_KEY);
       if (storedState) {
-        dispatch({ type: 'SET_STATE', payload: JSON.parse(storedState) });
+        const parsedState = JSON.parse(storedState);
+        // Basic validation
+        if (parsedState && typeof parsedState === 'object') {
+          dispatch({ type: 'SET_STATE', payload: { ...initialState, ...parsedState } });
+        }
       }
     } catch (error) {
       console.error('Failed to load state from localStorage', error);
@@ -73,7 +71,7 @@ export default function Dashboard() {
   }, [state]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-card">
         <div className="flex items-center gap-3">
           <Icons.Logo className="h-7 w-7 text-primary" />
@@ -82,7 +80,7 @@ export default function Dashboard() {
           </h1>
         </div>
       </header>
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-auto">
         <div className="p-4 md:p-8 grid gap-8 lg:grid-cols-5">
           <aside className="lg:col-span-2 flex flex-col gap-8">
             <CreditCardDisplay card={state.card} dispatch={dispatch} />
