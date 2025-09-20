@@ -4,7 +4,6 @@ import { useState, useMemo, type Dispatch } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { categorizeExpense } from '@/ai/flows/categorize-expense';
 import type { Action, Expense } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -41,8 +40,6 @@ interface AddExpenseFormProps {
 }
 
 export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
-  const [isCategorizing, setIsCategorizing] = useState(false);
-  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,40 +53,12 @@ export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
 
   const allCategories = useMemo(() => {
     const existingCategories = Array.from(new Set(expenses.map(e => e.category)));
-    return Array.from(new Set([...STATIC_CATEGORIES, ...aiSuggestions, ...existingCategories]));
-  }, [aiSuggestions, expenses]);
-
-  const handleDescriptionBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
-    const description = e.target.value;
-    if (!description || description.length < 3) {
-      setAiSuggestions([]);
-      return;
-    }
-    setIsCategorizing(true);
-    form.setValue('category', '');
-    try {
-      const result = await categorizeExpense({ description });
-      const suggestions = result.categorySuggestions || [];
-      setAiSuggestions(suggestions);
-      if (suggestions.length > 0) {
-        form.setValue('category', suggestions[0], { shouldValidate: true });
-      }
-    } catch (error) {
-      console.error('AI categorization failed', error);
-      toast({
-        variant: 'destructive',
-        title: 'AI Error',
-        description: 'Could not get category suggestions.',
-      });
-    } finally {
-      setIsCategorizing(false);
-    }
-  };
+    return Array.from(new Set([...STATIC_CATEGORIES, ...existingCategories]));
+  }, [expenses]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     dispatch({ type: 'ADD_EXPENSE', payload: values });
     form.reset();
-    setAiSuggestions([]);
     toast({
       title: 'Expense Added',
       description: `Successfully added "${values.description}".`,
@@ -111,7 +80,7 @@ export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Coffee with a friend" {...field} onBlur={handleDescriptionBlur} />
+                    <Input placeholder="e.g., Coffee with a friend" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -136,10 +105,10 @@ export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value} disabled={isCategorizing}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={isCategorizing ? 'AI is thinking...' : 'Select a category'} />
+                        <SelectValue placeholder={'Select a category'} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
