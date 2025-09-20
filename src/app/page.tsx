@@ -212,14 +212,14 @@ export default function Home() {
             {filteredTransactions.length > 0 ? (
               <ul className="divide-y divide-gray-200">
                 {filteredTransactions.map(t => (
-                  <li key={t.id} className="flex items-center justify-between py-4">
-                    <div className="flex items-center space-x-4 flex-grow min-w-0">
+                  <li key={t.id} className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center space-x-4 flex-1 min-w-0">
                       <div className="p-3 bg-gray-100 rounded-full flex-shrink-0">
                          <DollarSign className="w-5 h-5 text-green-500" />
                       </div>
-                      <div className="min-w-0 flex-grow">
+                      <div className="flex-1 min-w-0">
                         <p className="font-semibold text-gray-800 truncate">{t.description}</p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
+                        <div className="flex flex-wrap items-center space-x-4 text-sm text-gray-500 mt-1">
                           <div className="flex items-center space-x-1">
                              <Tag className="w-4 h-4"/>
                              <span>{t.category}</span>
@@ -231,11 +231,13 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-4 ml-4 flex-shrink-0">
-                        <p className="font-bold text-lg text-gray-800">${t.amount.toFixed(2)}</p>
-                        <button onClick={() => openDeleteTransactionConfirm(t)} className="p-2 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors">
-                            <Trash2 className="w-5 h-5" />
-                        </button>
+                    <div className="flex items-center justify-between mt-4 sm:mt-0 sm:ml-4 flex-shrink-0">
+                        <p className="font-bold text-lg text-gray-800 sm:order-1">${t.amount.toFixed(2)}</p>
+                        <div className="sm:order-2 sm:ml-4">
+                          <button onClick={() => openDeleteTransactionConfirm(t)} className="p-2 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors">
+                              <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
                     </div>
                   </li>
                 ))}
