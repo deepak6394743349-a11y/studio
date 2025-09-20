@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useMemo, type Dispatch } from 'react';
+import { useState, type Dispatch } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import type { Action, Expense } from '@/lib/types';
+import type { Action } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,10 +36,11 @@ const STATIC_CATEGORIES = ["Food", "Transport", "Shopping", "Bills", "Entertainm
 
 interface AddExpenseFormProps {
   dispatch: Dispatch<Action>;
-  expenses: Expense[];
+  allCategories: string[];
+  cardId: string | null;
 }
 
-export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
+export function AddExpenseForm({ dispatch, allCategories, cardId }: AddExpenseFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,14 +51,19 @@ export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
       category: '',
     },
   });
-
-  const allCategories = useMemo(() => {
-    const existingCategories = Array.from(new Set(expenses.map(e => e.category)));
-    return Array.from(new Set([...STATIC_CATEGORIES, ...existingCategories]));
-  }, [expenses]);
+  
+  const uniqueCategories = Array.from(new Set([...STATIC_CATEGORIES, ...allCategories]));
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    dispatch({ type: 'ADD_EXPENSE', payload: values });
+    if (!cardId) {
+      toast({
+        variant: 'destructive',
+        title: 'No Card Selected',
+        description: 'Please add and select a credit card before adding an expense.',
+      });
+      return;
+    }
+    dispatch({ type: 'ADD_EXPENSE', payload: { ...values, cardId } });
     form.reset();
     toast({
       title: 'Expense Added',
@@ -112,7 +118,7 @@ export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {allCategories.map((cat) => (
+                      {uniqueCategories.map((cat) => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                       ))}
                     </SelectContent>
@@ -121,7 +127,7 @@ export function AddExpenseForm({ dispatch, expenses }: AddExpenseFormProps) {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || !cardId}>
               {form.formState.isSubmitting ? (
                 <Loader2 className="animate-spin" />
               ) : (

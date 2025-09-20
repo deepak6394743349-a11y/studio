@@ -55,16 +55,16 @@ export function CreditCardDisplay({ cards, selectedCardId, dispatch }: CreditCar
   useEffect(() => {
     if (!carouselApi) return;
     const onSelect = () => {
-      const selectedCard = cards[carouselApi.selectedScrollSnap()];
-      if (selectedCard) {
-        dispatch({ type: 'SELECT_CARD', payload: { id: selectedCard.id } });
+      const selectedCardInCarousel = cards[carouselApi.selectedScrollSnap()];
+      if (selectedCardInCarousel && selectedCardInCarousel.id !== selectedCardId) {
+        dispatch({ type: 'SELECT_CARD', payload: { id: selectedCardInCarousel.id } });
       }
     };
     carouselApi.on('select', onSelect);
     return () => {
       carouselApi.off('select', onSelect);
     };
-  }, [carouselApi, cards, dispatch]);
+  }, [carouselApi, cards, dispatch, selectedCardId]);
 
   const handleAddClick = () => {
     setFormMode('add');
@@ -155,7 +155,7 @@ export function CreditCardDisplay({ cards, selectedCardId, dispatch }: CreditCar
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete this credit card.
+                      This action cannot be undone. This will permanently delete this credit card and all associated expenses.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

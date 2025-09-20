@@ -4,6 +4,7 @@ export interface Expense {
   amount: number;
   date: string; // ISO string
   category: string;
+  cardId: string;
 }
 
 export interface CreditCard {

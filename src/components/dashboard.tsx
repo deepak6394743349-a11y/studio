@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useMemo } from 'react';
 import type { Expense, CreditCard, Action } from '@/lib/types';
 import { Icons } from '@/components/icons';
 import { CreditCardDisplay } from '@/components/credit-card-display';
@@ -19,6 +19,7 @@ const appReducer = (state: State, action: Action): State => {
     case 'SET_STATE':
       return action.payload;
     case 'ADD_EXPENSE': {
+      if (!state.selectedCardId) return state; // Don't add expense if no card is selected
       const newExpense: Expense = {
         ...action.payload,
         id: crypto.randomUUID(),
@@ -45,12 +46,14 @@ const appReducer = (state: State, action: Action): State => {
       return { ...state, cards: newCards };
     }
     case 'DELETE_CARD': {
-      const newCards = state.cards.filter(c => c.id !== action.payload.id);
+      const cardIdToDelete = action.payload.id;
+      const newCards = state.cards.filter(c => c.id !== cardIdToDelete);
+      const newExpenses = state.expenses.filter(e => e.cardId !== cardIdToDelete);
       let newSelectedId = state.selectedCardId;
-      if (state.selectedCardId === action.payload.id) {
+      if (state.selectedCardId === cardIdToDelete) {
         newSelectedId = newCards.length > 0 ? newCards[0].id : null;
       }
-      return { ...state, cards: newCards, selectedCardId: newSelectedId };
+      return { ...state, cards: newCards, expenses: newExpenses, selectedCardId: newSelectedId };
     }
     case 'SELECT_CARD': {
       return { ...state, selectedCardId: action.payload.id };
@@ -106,7 +109,15 @@ export default function Dashboard() {
     }
   }, [state]);
   
-  const selectedCard = state.cards.find(c => c.id === state.selectedCardId) ?? null;
+  const displayedExpenses = useMemo(() => {
+    if (!state.selectedCardId) return [];
+    return state.expenses.filter(expense => expense.cardId === state.selectedCardId);
+  }, [state.expenses, state.selectedCardId]);
+
+  const allCategories = useMemo(() => {
+    return Array.from(new Set(state.expenses.map(e => e.category)));
+  }, [state.expenses]);
+
 
   return (
     <div className="flex flex-col h-full">
@@ -126,11 +137,15 @@ export default function Dashboard() {
               selectedCardId={state.selectedCardId}
               dispatch={dispatch}
             />
-            <AddExpenseForm dispatch={dispatch} expenses={state.expenses} />
+            <AddExpenseForm 
+              dispatch={dispatch} 
+              allCategories={allCategories}
+              cardId={state.selectedCardId} 
+            />
           </aside>
           <div className="xl:col-span-3 flex flex-col gap-8">
-            <ExpenseChart expenses={state.expenses} />
-            <ExpenseList expenses={state.expenses} dispatch={dispatch} />
+            <ExpenseChart expenses={displayedExpenses} />
+            <ExpenseList expenses={displayedExpenses} dispatch={dispatch} />
           </div>
         </div>
       </main>
