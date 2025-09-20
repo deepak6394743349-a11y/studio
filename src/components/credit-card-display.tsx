@@ -28,12 +28,30 @@ import {
 } from '@/components/ui/alert-dialog';
 import { CreditCardForm } from '@/components/credit-card-form';
 import { PlusCircle, Trash2, Pencil } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface CreditCardDisplayProps {
   cards: CreditCard[];
   selectedCardId: string | null;
   dispatch: Dispatch<Action>;
 }
+
+const getCardStyle = (bankName: string, index: number): React.CSSProperties => {
+  const styles = [
+    { background: 'linear-gradient(135deg, #6B73FF 0%, #000DFF 100%)', color: 'white' },
+    { background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', color: 'white' },
+    { background: 'linear-gradient(135deg, #000000 0%, #434343 100%)', color: 'white' },
+    { background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: 'white' },
+    { background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', color: 'white' },
+    { background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', color: 'black' },
+    { background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', color: 'white' },
+  ];
+  
+  if (bankName.toLowerCase().includes('hdfc')) return styles[0];
+  if (bankName.toLowerCase().includes('axis')) return styles[1];
+
+  return styles[index % styles.length];
+};
 
 export function CreditCardDisplay({ cards, selectedCardId, dispatch }: CreditCardDisplayProps) {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -96,9 +114,12 @@ export function CreditCardDisplay({ cards, selectedCardId, dispatch }: CreditCar
           {cards.length > 0 ? (
             <Carousel setApi={setCarouselApi} className="w-full">
               <CarouselContent>
-                {cards.map((card) => (
+                {cards.map((card, index) => (
                   <CarouselItem key={card.id}>
-                    <div className="aspect-[1.586] w-full rounded-lg p-6 flex flex-col justify-between bg-gradient-to-br from-primary via-purple-500 to-accent text-primary-foreground shadow-lg">
+                    <div 
+                      className="aspect-[1.586] w-full rounded-lg p-6 flex flex-col justify-between text-primary-foreground shadow-lg"
+                      style={getCardStyle(card.bankName, index)}
+                    >
                       <div className="flex justify-between items-start">
                         <span className="font-bold text-xl">{card.bankName}</span>
                         {chipImage && (
