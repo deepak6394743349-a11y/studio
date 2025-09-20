@@ -212,12 +212,12 @@ export default function Home() {
             {filteredTransactions.length > 0 ? (
               <ul className="divide-y divide-gray-200">
                 {filteredTransactions.map(t => (
-                  <li key={t.id} className="flex items-center justify-between py-4 px-2 -mx-2 hover:bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-4 flex-1 min-w-0">
-                      <div className="p-3 bg-gray-100 rounded-full">
+                  <li key={t.id} className="flex items-center justify-between py-4">
+                    <div className="flex items-center space-x-4 flex-grow min-w-0">
+                      <div className="p-3 bg-gray-100 rounded-full flex-shrink-0">
                          <DollarSign className="w-5 h-5 text-green-500" />
                       </div>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-grow">
                         <p className="font-semibold text-gray-800 truncate">{t.description}</p>
                         <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
                           <div className="flex items-center space-x-1">
@@ -231,9 +231,9 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 sm:space-x-4 ml-2">
-                        <p className="font-bold text-base sm:text-lg text-gray-800">${t.amount.toFixed(2)}</p>
-                        <button onClick={() => openDeleteTransactionConfirm(t)} className="p-2 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors flex-shrink-0">
+                    <div className="flex items-center space-x-4 ml-4 flex-shrink-0">
+                        <p className="font-bold text-lg text-gray-800">${t.amount.toFixed(2)}</p>
+                        <button onClick={() => openDeleteTransactionConfirm(t)} className="p-2 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors">
                             <Trash2 className="w-5 h-5" />
                         </button>
                     </div>
