@@ -46,6 +46,9 @@ export default function Home() {
   const [cardToDelete, setCardToDelete] = useState<Card | null>(null);
   const [showDeleteTransactionConfirm, setShowDeleteTransactionConfirm] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
+  const [showAddTransactionForm, setShowAddTransactionForm] = useState(false);
+  const [newTransaction, setNewTransaction] = useState({ description: '', amount: '', category: '', date: '' });
+
 
   const handleAddCard = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +62,24 @@ export default function Home() {
     }
   };
   
+  const handleAddTransaction = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedCard && newTransaction.description && newTransaction.amount && newTransaction.category && newTransaction.date) {
+      const newId = transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1;
+      const transactionToAdd: Transaction = {
+        id: newId,
+        cardId: selectedCard.id,
+        description: newTransaction.description,
+        amount: parseFloat(newTransaction.amount),
+        category: newTransaction.category,
+        date: newTransaction.date,
+      };
+      setTransactions([transactionToAdd, ...transactions]);
+      setNewTransaction({ description: '', amount: '', category: '', date: '' });
+      setShowAddTransactionForm(false);
+    }
+  };
+
   const openDeleteCardConfirm = (e: React.MouseEvent, card: Card) => {
     e.stopPropagation(); // Prevent card selection when clicking delete
     setCardToDelete(card);
@@ -205,9 +226,35 @@ export default function Home() {
         </div>
       )}
 
+      {showAddTransactionForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md m-4">
+            <h3 className="text-2xl font-bold text-gray-800 mb-6">Add New Transaction</h3>
+            <form onSubmit={handleAddTransaction}>
+              <div className="space-y-4">
+                <input type="text" placeholder="Description" value={newTransaction.description} onChange={e => setNewTransaction({ ...newTransaction, description: e.target.value })} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                <input type="number" placeholder="Amount" value={newTransaction.amount} onChange={e => setNewTransaction({ ...newTransaction, amount: e.target.value })} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                <input type="text" placeholder="Category" value={newTransaction.category} onChange={e => setNewTransaction({ ...newTransaction, category: e.target.value })} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                <input type="date" placeholder="Date" value={newTransaction.date} onChange={e => setNewTransaction({ ...newTransaction, date: e.target.value })} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+              </div>
+              <div className="flex justify-end mt-6 space-x-4">
+                <button type="button" onClick={() => setShowAddTransactionForm(false)} className="px-6 py-2 rounded-lg text-gray-600 bg-gray-100 hover:bg-gray-200 font-semibold">Cancel</button>
+                <button type="submit" className="px-6 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 font-semibold">Add Transaction</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {selectedCard && (
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Transactions for {selectedCard.name}</h2>
+           <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-800">Transactions for {selectedCard.name}</h2>
+            <button onClick={() => setShowAddTransactionForm(true)} className="flex items-center space-x-2 px-4 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 font-semibold transition-colors">
+              <PlusCircle className="w-5 h-5" />
+              <span>Add Transaction</span>
+            </button>
+          </div>
           <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 max-h-[40vh] overflow-y-auto">
             {filteredTransactions.length > 0 ? (
               <ul className="divide-y divide-gray-200">
@@ -245,7 +292,7 @@ export default function Home() {
             ) : (
               <div className="text-center py-12 text-gray-500">
                 <p className="font-semibold">No transactions for this card yet.</p>
-                <p className="text-sm">Add a new transaction to get started.</p>
+                <p className="text-sm">Click "Add Transaction" to get started.</p>
               </div>
             )}
           </div>
@@ -254,3 +301,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
