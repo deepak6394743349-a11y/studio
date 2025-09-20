@@ -27,7 +27,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { CreditCardForm } from '@/components/credit-card-form';
-import { PlusCircle, Trash2, Pencil, Wifi } from 'lucide-react';
+import { PlusCircle, Trash2, Pencil, Wifi, Plane } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { VisaLogo } from '@/components/visa-logo';
 
@@ -52,7 +52,7 @@ const TataNeuCardDesign = ({ card }: { card: CreditCard }) => {
                     <path d="M5 5L15 15" stroke="#1A5B9A" strokeWidth="2"/>
                     <path d="M15 5L5 15" stroke="#1A5B9A" strokeWidth="2"/>
                 </svg>
-                <span className="font-bold text-lg tracking-wider">TATA NEUCARD+</span>
+                <span className="font-bold text-lg tracking-wider">TATA NEUCARD</span>
             </div>
         </div>
 
@@ -159,7 +159,7 @@ const HDFCDesign = ({ card }: { card: CreditCard }) => {
 };
 
 
-const AxisBankDesign = ({ card }: { card: CreditCard }) => {
+const AxisFlipkartDesign = ({ card }: { card: CreditCard }) => {
   const chipImage = PlaceHolderImages.find(img => img.id === 'credit-card-chip');
 
   return (
@@ -229,6 +229,127 @@ const AxisBankDesign = ({ card }: { card: CreditCard }) => {
   );
 };
 
+const AxisMagnusDesign = ({ card }: { card: CreditCard }) => {
+  const chipImage = PlaceHolderImages.find(img => img.id === 'credit-card-chip');
+  return (
+    <div className="aspect-[1.586] w-full rounded-xl p-6 flex flex-col justify-between text-white shadow-lg relative overflow-hidden bg-gray-900">
+      <div className="absolute inset-0 z-0 opacity-50" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`}}></div>
+      <div className="relative z-10 flex justify-between items-start">
+        <div>
+          <svg viewBox="0 0 100 30" className="w-24 h-auto">
+              <path d="M10 0 L0 15 L10 30 H20 L30 15 L20 0 Z" fill="#6a1b9a"/>
+              <text x="35" y="21" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="white">AXIS BANK</text>
+          </svg>
+        </div>
+        <span className="text-xl font-semibold tracking-widest">MAGNUS</span>
+      </div>
+      <div className="relative z-10 flex flex-col gap-4">
+        {chipImage && (
+            <Image
+              src={chipImage.imageUrl}
+              alt={chipImage.description}
+              width={48}
+              height={38}
+              className="rounded-md"
+              data-ai-hint={chipImage.imageHint}
+            />
+        )}
+        <span className="text-2xl font-mono tracking-widest self-center">{`**** **** **** ${card.number.slice(-4)}`}</span>
+        <div className="flex justify-between items-end">
+          <span className="uppercase text-lg font-sans">{card.name}</span>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <span className="text-xs">VALID THRU</span>
+              <span className="text-base font-mono">{card.expiry}</span>
+            </div>
+            <VisaLogo className="w-16 h-auto" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const AxisVistaraDesign = ({ card }: { card: CreditCard }) => {
+  const chipImage = PlaceHolderImages.find(img => img.id === 'credit-card-chip');
+  return (
+    <div className="aspect-[1.586] w-full rounded-xl p-6 flex flex-col justify-between text-white shadow-lg relative overflow-hidden bg-[#5E2A73]">
+      <div className="absolute -right-16 -top-16 z-0 opacity-30">
+        <Plane size={200} />
+      </div>
+      <div className="relative z-10 flex justify-between items-start">
+        <svg viewBox="0 0 100 30" className="w-24 h-auto">
+            <path d="M10 0 L0 15 L10 30 H20 L30 15 L20 0 Z" fill="#FFFFFF"/>
+            <text x="35" y="21" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="white">AXIS BANK</text>
+        </svg>
+        <div className="text-right">
+          <span className="font-bold text-xl">Vistara</span>
+          <p className="text-xs">INFINITE</p>
+        </div>
+      </div>
+       <div className="relative z-10 flex justify-between items-end">
+        <div className="flex flex-col">
+          {chipImage && (
+            <Image
+              src={chipImage.imageUrl}
+              alt={chipImage.description}
+              width={48}
+              height={38}
+              className="rounded-md mb-2"
+              data-ai-hint={chipImage.imageHint}
+            />
+          )}
+          <span className="text-2xl font-mono tracking-widest mb-2">{`**** **** **** ${card.number.slice(-4)}`}</span>
+          <span className="uppercase text-base font-sans tracking-wider">{card.name}</span>
+        </div>
+        <div className="flex flex-col items-end">
+            <div className="flex items-center gap-4">
+                <div className="text-right">
+                    <span className="text-xs block">VALID THRU</span>
+                    <span className="text-sm font-mono">{card.expiry}</span>
+                </div>
+                 <VisaLogo className="w-16 h-auto" />
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const AxisAceDesign = ({ card }: { card: CreditCard }) => {
+  const chipImage = PlaceHolderImages.find(img => img.id === 'credit-card-chip');
+  return (
+    <div className="aspect-[1.586] w-full rounded-xl p-6 flex flex-col justify-between text-black shadow-lg relative overflow-hidden bg-white">
+      <div className="absolute top-0 left-0 w-2/3 h-full bg-gray-100 -skew-x-12 -ml-8"></div>
+      <div className="relative z-10 flex justify-between items-start">
+        <svg viewBox="0 0 100 30" className="w-24 h-auto">
+            <path d="M10 0 L0 15 L10 30 H20 L30 15 L20 0 Z" fill="#6a1b9a"/>
+            <text x="35" y="21" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="black">AXIS BANK</text>
+        </svg>
+        {chipImage && (
+            <Image
+              src={chipImage.imageUrl}
+              alt={chipImage.description}
+              width={48}
+              height={38}
+              className="rounded-md"
+              data-ai-hint={chipImage.imageHint}
+            />
+        )}
+      </div>
+      <div className="relative z-10 flex justify-between items-end">
+        <div className="flex flex-col">
+          <span className="text-2xl font-semibold">ACE</span>
+          <span className="uppercase text-base font-sans tracking-wider mt-4">{card.name}</span>
+        </div>
+        <div className="flex flex-col items-end">
+            <span className="text-xl font-mono tracking-widest mb-2">{`**** **** **** ${card.number.slice(-4)}`}</span>
+             <VisaLogo className="w-16 h-auto [&>path]:fill-black" />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const GenericDesign = ({ card, index }: { card: CreditCard, index: number }) => {
   const chipImage = PlaceHolderImages.find(img => img.id === 'credit-card-chip');
@@ -324,15 +445,27 @@ export function CreditCardDisplay({ cards, selectedCardId, dispatch }: { cards: 
 
 
   const renderCard = (card: CreditCard, index: number) => {
-    const bank = card.bankName.toLowerCase();
-    if (bank.includes('tata neu')) {
+    const name = card.bankName.toLowerCase();
+    if (name.includes('tata neu')) {
       return <TataNeuCardDesign card={card} />;
     }
-    if (bank.includes('hdfc')) {
+    if (name.includes('hdfc')) {
       return <HDFCDesign card={card} />;
     }
-    if (bank.includes('axis')) {
-      return <AxisBankDesign card={card} />;
+    if (name.includes('flipkart')) {
+      return <AxisFlipkartDesign card={card} />;
+    }
+    if (name.includes('magnus')) {
+      return <AxisMagnusDesign card={card} />;
+    }
+    if (name.includes('vistara')) {
+      return <AxisVistaraDesign card={card} />;
+    }
+     if (name.includes('ace')) {
+      return <AxisAceDesign card={card} />;
+    }
+    if (name.includes('axis')) {
+      return <AxisFlipkartDesign card={card} />;
     }
     return <GenericDesign card={card} index={index} />;
   }
