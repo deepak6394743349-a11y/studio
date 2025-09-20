@@ -68,7 +68,6 @@ const HDFCDesign = ({ card }: { card: CreditCard }) => {
                 data-ai-hint={chipImage.imageHint}
               />
             )}
-            <VisaLogo className="w-16 h-auto" />
         </div>
       </div>
       
@@ -76,9 +75,12 @@ const HDFCDesign = ({ card }: { card: CreditCard }) => {
         <span className="text-2xl font-mono tracking-widest">{`**** **** **** ${card.number.slice(-4)}`}</span>
         <div className="flex justify-between items-end">
           <span className="uppercase text-base font-sans">{card.name}</span>
-          <div className="flex flex-col items-end">
-            <span className="text-xs">VALID THRU</span>
-            <span className="text-base font-mono">{card.expiry}</span>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <span className="text-xs">VALID THRU</span>
+              <span className="text-base font-mono">{card.expiry}</span>
+            </div>
+            <VisaLogo className="w-16 h-auto" />
           </div>
         </div>
       </div>
@@ -129,7 +131,7 @@ const AxisBankDesign = ({ card }: { card: CreditCard }) => {
       </div>
       
       <div className="relative z-10 flex justify-between items-end">
-        <div>
+        <div className="flex flex-col">
           {chipImage && (
             <Image
               src={chipImage.imageUrl}
@@ -140,14 +142,14 @@ const AxisBankDesign = ({ card }: { card: CreditCard }) => {
               data-ai-hint={chipImage.imageHint}
             />
           )}
-          <span className="uppercase text-lg font-sans">{card.name}</span>
+          <span className="uppercase text-base font-sans tracking-wider">{card.name}</span>
         </div>
         <div className="flex flex-col items-end">
-            <span className="text-2xl font-mono tracking-widest">{`**** **** **** ${card.number.slice(-4)}`}</span>
+            <span className="text-xl font-mono tracking-widest mb-2">{`**** **** **** ${card.number.slice(-4)}`}</span>
             <div className="flex items-center gap-4">
                 <div className="text-right">
                     <span className="text-xs block">VALID THRU</span>
-                    <span className="text-base font-mono">{card.expiry}</span>
+                    <span className="text-sm font-mono">{card.expiry}</span>
                 </div>
                  <VisaLogo className="w-16 h-auto" />
             </div>
