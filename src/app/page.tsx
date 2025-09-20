@@ -103,11 +103,11 @@ export default function Home() {
                 <Trash2 className="w-5 h-5" />
               </button>
               
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-semibold">{card.bank}</span>
-                <div className="w-12 h-8 bg-gradient-to-b from-yellow-400 to-yellow-500 rounded-md flex justify-center items-center">
+              <div className="flex justify-between items-start mb-4">
+                 <div className="w-12 h-8 bg-gradient-to-b from-yellow-400 to-yellow-500 rounded-md flex justify-center items-center">
                     <div className="w-10 h-6 bg-yellow-200/50 rounded-sm border border-yellow-600/50"></div>
                 </div>
+                <span className="text-lg font-semibold">{card.bank}</span>
               </div>
 
               <div className="mb-6">
