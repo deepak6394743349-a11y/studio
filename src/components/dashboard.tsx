@@ -32,6 +32,8 @@ const appReducer = (state: State, action: Action): State => {
       };
     case 'SET_CARD':
       return { ...state, card: action.payload };
+    case 'DELETE_CARD':
+      return { ...state, card: null };
     default:
       return state;
   }
@@ -80,7 +82,7 @@ export default function Dashboard() {
           </h1>
         </div>
       </header>
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-auto">
         <div className="p-4 md:p-8 grid gap-8 grid-cols-1 lg:grid-cols-5">
           <aside className="lg:col-span-2 flex flex-col gap-8">
             <CreditCardDisplay card={state.card} dispatch={dispatch} />

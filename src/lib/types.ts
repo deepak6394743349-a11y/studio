@@ -21,4 +21,5 @@ export type Action =
   | { type: 'SET_STATE'; payload: State }
   | { type: 'ADD_EXPENSE'; payload: Omit<Expense, 'id' | 'date'> }
   | { type: 'DELETE_EXPENSE'; payload: { id: string } }
-  | { type: 'SET_CARD'; payload: CreditCard };
+  | { type: 'SET_CARD'; payload: CreditCard }
+  | { type: 'DELETE_CARD' };

@@ -7,8 +7,19 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { CreditCardForm } from '@/components/credit-card-form';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Trash2 } from 'lucide-react';
 
 interface CreditCardDisplayProps {
   card: CreditCard | null;
@@ -22,12 +33,39 @@ export function CreditCardDisplay({ card, dispatch }: CreditCardDisplayProps) {
   const formatCardNumber = (num: string) => {
     return `**** **** **** ${num.slice(-4)}`;
   };
+  
+  const handleDelete = () => {
+    dispatch({ type: 'DELETE_CARD' });
+  };
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>My Card</CardTitle>
+          {card && (
+             <AlertDialog>
+             <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+             </AlertDialogTrigger>
+             <AlertDialogContent>
+               <AlertDialogHeader>
+                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                 <AlertDialogDescription>
+                   This action cannot be undone. This will permanently delete your credit card details.
+                 </AlertDialogDescription>
+               </AlertDialogHeader>
+               <AlertDialogFooter>
+                 <AlertDialogCancel>Cancel</AlertDialogCancel>
+                 <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">
+                   Delete
+                 </AlertDialogAction>
+               </AlertDialogFooter>
+             </AlertDialogContent>
+           </AlertDialog>
+          )}
         </CardHeader>
         <CardContent>
           {card ? (
