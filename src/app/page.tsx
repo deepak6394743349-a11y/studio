@@ -354,7 +354,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Total Spend</p>
-                <p className="text-2xl font-bold text-gray-800">${spend.total.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-gray-800">₹{spend.total.toFixed(2)}</p>
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
@@ -363,7 +363,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Today</p>
-                <p className="text-2xl font-bold text-gray-800">${spend.today.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-gray-800">₹{spend.today.toFixed(2)}</p>
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
@@ -372,7 +372,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">This Month</p>
-                <p className="text-2xl font-bold text-gray-800">${spend.thisMonth.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-gray-800">₹{spend.thisMonth.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -401,7 +401,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-4 sm:mt-0 sm:ml-4 flex-shrink-0">
-                        <p className="font-bold text-lg text-gray-800 sm:order-1">${t.amount.toFixed(2)}</p>
+                        <p className="font-bold text-lg text-gray-800 sm:order-1">₹{t.amount.toFixed(2)}</p>
                         <div className="sm:order-2 sm:ml-4">
                           <button onClick={() => openDeleteTransactionConfirm(t)} className="p-2 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors">
                               <Trash2 className="w-5 h-5" />
