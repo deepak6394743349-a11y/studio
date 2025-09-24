@@ -10,6 +10,7 @@ interface Card {
   name: string;
   bank: string;
   last4: string;
+  isVirtual?: boolean; // To identify the special card
 }
 
 interface Transaction {
@@ -22,6 +23,7 @@ interface Transaction {
 }
 
 const initialCards: Card[] = [
+  { id: 0, name: 'Daily Expenses', bank: 'Cash Wallet', last4: 'CASH', isVirtual: true },
   { id: 1, name: 'HDFC Millennia', bank: 'HDFC Bank', last4: '1234' },
   { id: 2, name: 'Amazon Pay ICICI', bank: 'ICICI Bank', last4: '5678' },
 ];
@@ -31,7 +33,7 @@ const initialTransactions: Transaction[] = [
   { id: 2, cardId: 1, description: 'Netflix Subscription', amount: 15.00, category: 'Entertainment', date: '2024-05-18' },
   { id: 3, cardId: 2, description: 'Amazon Purchase', amount: 125.00, category: 'Shopping', date: '2024-05-19' },
   { id: 4, cardId: 1, description: 'Groceries', amount: 75.20, category: 'Shopping', date: '2024-05-21' },
-  { id: 5, cardId: 1, description: 'Movie Tickets', amount: 22.00, category: 'Entertainment', date: '2024-05-22' },
+  { id: 5, cardId: 0, description: 'Lunch', amount: 12.00, category: 'Food', date: '2024-05-22' },
   { id: 6, cardId: 2, description: 'Dinner Out', amount: 60.00, category: 'Food', date: '2024-05-23' },
 ];
 
@@ -58,6 +60,10 @@ export default function Home() {
       let loadedCards: Card[];
       if (storedCards) {
         loadedCards = JSON.parse(storedCards);
+        // Ensure the daily expenses card is always present
+        if (!loadedCards.find(c => c.isVirtual)) {
+          loadedCards.unshift({ id: 0, name: 'Daily Expenses', bank: 'Cash Wallet', last4: 'CASH', isVirtual: true });
+        }
       } else {
         loadedCards = initialCards;
       }
@@ -130,6 +136,7 @@ export default function Home() {
 
   const openDeleteCardConfirm = (e: React.MouseEvent, card: Card) => {
     e.stopPropagation(); // Prevent card selection when clicking delete
+    if (card.isVirtual) return; // Prevent deletion of virtual card
     setCardToDelete(card);
     setShowDeleteCardConfirm(true);
   };
@@ -225,13 +232,15 @@ export default function Home() {
                 selectedCard?.id === card.id ? 'bg-gradient-to-br from-gray-800 to-black text-white ring-2 ring-blue-400' : 'bg-gradient-to-br from-gray-600 to-gray-700 text-white'
               }`}
             >
-               <button
-                onClick={(e) => openDeleteCardConfirm(e, card)}
-                className="absolute top-3 right-3 p-1 rounded-full text-white/50 hover:bg-white/20 hover:text-white transition-colors"
-                aria-label="Delete card"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
+               {!card.isVirtual && (
+                 <button
+                  onClick={(e) => openDeleteCardConfirm(e, card)}
+                  className="absolute top-3 right-3 p-1 rounded-full text-white/50 hover:bg-white/20 hover:text-white transition-colors"
+                  aria-label="Delete card"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+               )}
               
               <div className="flex justify-between items-start mb-4">
                  <div className="w-12 h-8 bg-gradient-to-b from-yellow-400 to-yellow-500 rounded-md flex justify-center items-center">
@@ -242,7 +251,7 @@ export default function Home() {
 
               <div className="mb-6">
                   <p className="text-2xl font-mono tracking-widest">
-                    **** **** **** {card.last4}
+                    {card.isVirtual ? card.last4 : `**** **** **** ${card.last4}`}
                   </p>
               </div>
 
@@ -414,3 +423,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
